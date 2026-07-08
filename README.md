@@ -14,7 +14,7 @@ npm install
 npm run dev
 ```
 
-浏览器访问 http://localhost:5173 ，API 通过 Vite 代理到 `http://localhost:8080`。
+浏览器访问 http://localhost:5173 ，API 通过 Vite 代理到 `http://localhost:18080`。
 
 ## 生产构建
 
