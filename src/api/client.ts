@@ -11,6 +11,8 @@ export interface Task {
   type: string;
   status: TaskStatus;
   progress: number;
+  stage?: string;
+  duration_sec?: number;
   source_url?: string;
   source_file?: string;
   language?: string;
@@ -52,6 +54,10 @@ export function uploadTask(file: File, language: string) {
 
 export function getTask(id: string) {
   return request<Task>(`/api/v1/tasks/${id}`);
+}
+
+export function getTaskSRTUrl(id: string) {
+  return `${API_BASE}/api/v1/tasks/${id}/srt`;
 }
 
 export function formatTime(sec: number) {

@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 const tools = [
   {
-    title: "音视频转文字",
-    desc: "支持上传文件或粘贴链接，自动提取语音并转成文本。",
+    title: "视频 / 音频转文字",
+    desc: "上传 mp4 等视频或音频文件，自动提取语音并转成带时间轴的文本。",
     path: "/tools/media-to-text",
     tag: "ASR",
   },

@@ -13,7 +13,7 @@ export default function Layout() {
               首页
             </Link>
             <Link to="/tools/media-to-text" className="hover:text-white">
-              音视频转文字
+              视频转文字
             </Link>
           </nav>
         </div>
