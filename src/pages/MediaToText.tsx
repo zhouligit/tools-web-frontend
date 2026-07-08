@@ -16,6 +16,7 @@ export default function MediaToText() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const timerRef = useRef<number>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     return () => {
@@ -74,7 +75,7 @@ export default function MediaToText() {
             mode === "upload" ? "bg-indigo-600 text-white" : "bg-slate-800"
           }`}
         >
-          上传文件
+          本地文件
         </button>
         <button
           type="button"
@@ -92,12 +93,34 @@ export default function MediaToText() {
         className="mb-8 rounded-xl border border-slate-800 bg-slate-900 p-6"
       >
         {mode === "upload" ? (
-          <input
-            type="file"
-            accept="audio/*,video/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="mb-4 block w-full text-sm text-slate-300 file:mr-4 file:rounded file:border-0 file:bg-indigo-600 file:px-4 file:py-2 file:text-white"
-          />
+          <div className="mb-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="audio/*,video/*,.mp3,.mp4,.wav,.m4a,.webm,.ogg"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
+            >
+              选择文件
+            </button>
+            <p className="mt-3 text-sm text-slate-400">
+              {file ? (
+                <>
+                  已选择：<span className="text-slate-200">{file.name}</span>
+                  <span className="ml-2 text-slate-500">
+                    ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                  </span>
+                </>
+              ) : (
+                "支持 mp3 / mp4 / wav 等，选好后点击「开始转写」"
+              )}
+            </p>
+          </div>
         ) : (
           <input
             value={url}
