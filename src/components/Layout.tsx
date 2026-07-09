@@ -15,6 +15,9 @@ export default function Layout() {
             <Link to="/tools/media-to-text" className="hover:text-white">
               视频转文字
             </Link>
+            <Link to="/tools/image" className="hover:text-white">
+              图片处理
+            </Link>
           </nav>
         </div>
       </header>

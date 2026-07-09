@@ -7,6 +7,12 @@ const tools = [
     path: "/tools/media-to-text",
     tag: "ASR",
   },
+  {
+    title: "图片处理",
+    desc: "图片格式转换（JPG / PNG / WebP）与体积压缩，即传即下。",
+    path: "/tools/image",
+    tag: "Image",
+  },
 ];
 
 export default function Home() {
