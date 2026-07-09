@@ -9,7 +9,7 @@ const tools = [
   },
   {
     title: "图片处理",
-    desc: "图片格式转换（JPG / PNG / WebP）与体积压缩，即传即下。",
+    desc: "格式转换、体积压缩与图片文字提取（OCR），即传即得。",
     path: "/tools/image",
     tag: "Image",
   },
