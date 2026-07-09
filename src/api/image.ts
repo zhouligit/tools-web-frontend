@@ -5,6 +5,36 @@ export interface ImageProcessResult {
   filename: string;
 }
 
+function parseContentDisposition(disposition: string, fallback: string): string {
+  const star = disposition.match(/filename\*=UTF-8''([^;\n]+)/i);
+  if (star?.[1]) {
+    try {
+      return decodeURIComponent(star[1]);
+    } catch {
+      // ignore malformed encoding
+    }
+  }
+
+  const quoted = disposition.match(/filename="([^"]+)"/i);
+  if (quoted?.[1] && /^[\x20-\x7E]+$/.test(quoted[1])) {
+    return quoted[1];
+  }
+
+  return fallback;
+}
+
+function outputFilenameFromOriginal(originalName: string, contentType: string): string {
+  const extByType: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  };
+  const ext = extByType[contentType] || "out";
+  const dot = originalName.lastIndexOf(".");
+  const base = dot > 0 ? originalName.slice(0, dot) : originalName;
+  return `${base}.${ext}`;
+}
+
 async function postImage(
   path: string,
   file: File,
@@ -29,8 +59,11 @@ async function postImage(
   const originalSize = Number(resp.headers.get("X-Original-Size") || file.size);
   const outputSize = Number(resp.headers.get("X-Output-Size") || 0);
   const disposition = resp.headers.get("Content-Disposition") || "";
-  const match = disposition.match(/filename=\"?([^\";]+)/);
-  const filename = match?.[1] || "image.out";
+  const contentType = resp.headers.get("Content-Type") || "";
+  const filename = parseContentDisposition(
+    disposition,
+    outputFilenameFromOriginal(file.name, contentType),
+  );
 
   const blob = await resp.blob();
   return {
