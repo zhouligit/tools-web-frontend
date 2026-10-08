@@ -5,3 +5,21 @@
 body {
   @apply bg-slate-950 text-slate-100 min-h-screen;
 }
+
+body:has(.report-create),
+body:has(.report-view) {
+  @apply bg-white text-stone-900;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .report-create header,
+  .report-create form,
+  .print\:hidden {
+    display: none !important;
+  }
+}
