@@ -11,6 +11,82 @@ body:has(.report-view) {
   @apply bg-white text-stone-900;
 }
 
+/* 鉴定报告公开页：对齐市住建委公示样式 */
+.report-view-page {
+  min-height: 100vh;
+  background: #fff;
+  color: #000;
+  font-family:
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Heiti SC",
+    "Noto Sans SC",
+    "WenQuanYi Micro Hei",
+    sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.report-view-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 10px 32px;
+}
+
+.report-view-notice {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #000;
+}
+
+.report-view-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1px solid #000;
+}
+
+.report-view-table th,
+.report-view-table td {
+  border: 1px solid #000;
+  padding: 10px 8px;
+  vertical-align: middle;
+  word-break: break-word;
+  font-weight: 400;
+  color: #000;
+}
+
+.report-view-table th {
+  width: 34%;
+  text-align: center;
+  background: #fff;
+}
+
+.report-view-table td {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.report-view-table td div {
+  line-height: 1.65;
+}
+
+.report-view-status {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #666;
+  font-size: 15px;
+}
+
 @media print {
   body {
     background: white !important;

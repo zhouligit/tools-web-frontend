@@ -34,16 +34,16 @@ export default function ReportView() {
 
   if (loading) {
     return (
-      <div className="report-view flex min-h-screen items-center justify-center bg-white text-stone-500">
-        加载中…
+      <div className="report-view report-view-page">
+        <p className="report-view-status">加载中…</p>
       </div>
     );
   }
 
   if (error || !report) {
     return (
-      <div className="report-view flex min-h-screen items-center justify-center bg-white px-4 text-center text-stone-600">
-        {error || "报告不存在"}
+      <div className="report-view report-view-page">
+        <p className="report-view-status">{error || "报告不存在"}</p>
       </div>
     );
   }
@@ -52,9 +52,12 @@ export default function ReportView() {
   const explanations = pad3(report.conclusion_explanations);
 
   return (
-    <div className="report-view min-h-screen bg-white px-3 py-6 text-black">
-      <div className="mx-auto max-w-xl">
-        <table className="w-full border-collapse border border-black text-sm">
+    <div className="report-view report-view-page">
+      <div className="report-view-inner">
+        <p className="report-view-notice">
+          该报告主要信息已上传至市住建委“北京市城镇房屋建筑使用安全管理系统”
+        </p>
+        <table className="report-view-table">
           <tbody>
             <Row label="报告类型" value={report.report_type} />
             <Row label="报告唯一编码" value={report.report_code} />
@@ -64,11 +67,15 @@ export default function ReportView() {
             <Row label="房屋建筑地址" value={report.building_address} />
             <MultiRow
               label="评估鉴定结论"
-              items={conclusions.map((v, i) => `鉴定结论${i + 1}）：${v}`)}
+              items={conclusions.map((v, i) =>
+                formatSlot(`鉴定结论${i + 1}`, v),
+              )}
             />
             <MultiRow
               label="评估鉴定结论解释"
-              items={explanations.map((v, i) => `结论解释${i + 1}）：${v}`)}
+              items={explanations.map((v, i) =>
+                formatSlot(`结论解释${i + 1}`, v),
+              )}
             />
             <Row label="鉴定负责人" value={report.person_in_charge} />
             <Row label="审核人" value={report.reviewer} />
@@ -88,15 +95,16 @@ function pad3(items?: string[]) {
   return out;
 }
 
+/** 与截图一致：鉴定结论1): Asu级 */
+function formatSlot(label: string, value: string) {
+  return value ? `${label}): ${value}` : `${label}):`;
+}
+
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <tr>
-      <th className="w-[38%] border border-black bg-white px-2 py-2.5 text-left font-normal align-top">
-        {label}
-      </th>
-      <td className="border border-black px-2 py-2.5 align-top break-words">
-        {value || "\u00A0"}
-      </td>
+      <th>{label}</th>
+      <td>{value || "\u00A0"}</td>
     </tr>
   );
 }
@@ -104,14 +112,10 @@ function Row({ label, value }: { label: string; value: string }) {
 function MultiRow({ label, items }: { label: string; items: string[] }) {
   return (
     <tr>
-      <th className="w-[38%] border border-black bg-white px-2 py-2.5 text-left font-normal align-top">
-        {label}
-      </th>
-      <td className="border border-black px-2 py-2.5 align-top">
+      <th>{label}</th>
+      <td>
         {items.map((item, index) => (
-          <div key={index} className="leading-relaxed">
-            {item}
-          </div>
+          <div key={index}>{item}</div>
         ))}
       </td>
     </tr>
