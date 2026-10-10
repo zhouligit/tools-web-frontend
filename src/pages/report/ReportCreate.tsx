@@ -22,6 +22,11 @@ const emptyForm: CreateReportPayload = {
   appraisers: "",
 };
 
+/** 二维码边长；中间图标约占 22%（与样例白底方块比例接近） */
+const QR_SIZE = 240;
+const QR_LOGO_SIZE = Math.round(QR_SIZE * 0.22);
+const QR_LOGO_SRC = "/qr-center-logo.png";
+
 export default function ReportCreate() {
   const [form, setForm] = useState<CreateReportPayload>(emptyForm);
   const [report, setReport] = useState<Report | null>(null);
@@ -207,9 +212,15 @@ export default function ReportCreate() {
               <QRCodeCanvas
                 id="report-qr-canvas"
                 value={publicURL}
-                size={220}
-                level="M"
+                size={QR_SIZE}
+                level="H"
                 includeMargin
+                imageSettings={{
+                  src: QR_LOGO_SRC,
+                  width: QR_LOGO_SIZE,
+                  height: QR_LOGO_SIZE,
+                  excavate: true,
+                }}
               />
               <div className="w-full break-all text-center text-sm text-stone-600">
                 <p className="mb-1 font-medium text-stone-800">
