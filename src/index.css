@@ -32,16 +32,22 @@ body:has(.report-view) {
 .report-view-inner {
   max-width: 640px;
   margin: 0 auto;
-  padding: 16px 10px 32px;
+  padding: 14px 8px 28px;
 }
 
 .report-view-notice {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
   text-align: center;
-  font-size: 15px;
+  /* 按屏宽缩放，保证「…建筑使用」单行不溢出、不拆成三行 */
+  font-size: clamp(11px, 3.2vw, 14px);
   font-weight: 700;
-  line-height: 1.7;
+  line-height: 1.65;
   color: #000;
+}
+
+.report-view-notice-line {
+  display: block;
+  white-space: nowrap;
 }
 
 .report-view-table {
@@ -54,27 +60,36 @@ body:has(.report-view) {
 .report-view-table th,
 .report-view-table td {
   border: 1px solid #000;
-  padding: 10px 6px;
+  padding: 10px 8px;
   vertical-align: middle;
-  word-break: break-word;
   color: #000;
 }
 
+/* 左栏：固定能放下 4 个汉字；禁止浏览器再拆字 */
 .report-view-table th {
-  width: 4.6em;
+  width: 5.2em;
   text-align: center;
   background: #fff;
   font-weight: 700;
   line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  white-space: normal;
 }
 
-.report-view-table th div {
+.report-view-table th .label-line {
+  display: block;
   font-weight: 700;
+  white-space: nowrap;
+  /* 微信里中文粗体不明显时略加强 */
+  text-shadow: 0 0 0.35px currentColor;
 }
 
 .report-view-table td {
   font-weight: 400;
   text-align: left;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   padding-left: 10px;
   padding-right: 10px;
 }

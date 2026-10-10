@@ -62,10 +62,12 @@ export default function ReportView() {
   return (
     <div className="report-view report-view-page">
       <div className="report-view-inner">
+        {/* 两行块级，避免自然换行 + br 叠成三行 */}
         <p className="report-view-notice">
-          该报告主要信息已上传至市住建委“北京市城镇房屋建筑使用
-          <br />
-          安全管理系统”
+          <span className="report-view-notice-line">
+            该报告主要信息已上传至市住建委“北京市城镇房屋建筑使用
+          </span>
+          <span className="report-view-notice-line">安全管理系统”</span>
         </p>
         <table className="report-view-table">
           <tbody>
@@ -105,12 +107,11 @@ function pad3(items?: string[]) {
   return out;
 }
 
-/** 与样例一致：鉴定结论1): Asu级 */
 function formatSlot(label: string, value: string) {
   return value ? `${label}): ${value}` : `${label}):`;
 }
 
-/** 左边栏一行最多四个字 */
+/** 左边栏一行最多四个字，由 JS 控制换行，CSS 禁止再拆字 */
 function formatLabelLines(label: string) {
   const chars = Array.from(label);
   const lines: string[] = [];
@@ -124,7 +125,9 @@ function LabelCell({ label }: { label: string }) {
   return (
     <th>
       {formatLabelLines(label).map((line, i) => (
-        <div key={i}>{line}</div>
+        <div key={i} className="label-line">
+          {line}
+        </div>
       ))}
     </th>
   );
