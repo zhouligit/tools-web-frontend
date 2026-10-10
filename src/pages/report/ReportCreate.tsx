@@ -6,6 +6,7 @@ import {
   Report,
   reportPublicURL,
 } from "../../api/report";
+import qrCenterLogo from "../../assets/qr-center-logo.png";
 
 const emptyForm: CreateReportPayload = {
   report_type: "房屋综合安全性（含抗震）鉴定报告（楼房）",
@@ -22,10 +23,9 @@ const emptyForm: CreateReportPayload = {
   appraisers: "",
 };
 
-/** 二维码边长；中间图标约占 22%（与样例白底方块比例接近） */
+/** 二维码边长；中间图标约占 26%（贴近样例中心白底比例） */
 const QR_SIZE = 240;
-const QR_LOGO_SIZE = Math.round(QR_SIZE * 0.22);
-const QR_LOGO_SRC = "/qr-center-logo.png";
+const QR_LOGO_SIZE = Math.round(QR_SIZE * 0.26);
 
 export default function ReportCreate() {
   const [form, setForm] = useState<CreateReportPayload>(emptyForm);
@@ -76,14 +76,39 @@ export default function ReportCreate() {
     }
   }
 
-  function downloadQR() {
+  async function downloadQR() {
     const canvas = document.getElementById(
       "report-qr-canvas",
     ) as HTMLCanvasElement | null;
     if (!canvas) return;
+
+    // 合成中间图标，避免仅依赖 qrcode.react 内部绘制定时
+    const out = document.createElement("canvas");
+    out.width = canvas.width;
+    out.height = canvas.height;
+    const ctx = out.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(canvas, 0, 0);
+
+    try {
+      const img = new Image();
+      img.src = qrCenterLogo;
+      await img.decode();
+      const scale = canvas.width / QR_SIZE;
+      const logoPx = QR_LOGO_SIZE * scale;
+      const pad = logoPx * 0.1;
+      const x = (canvas.width - logoPx) / 2;
+      const y = (canvas.height - logoPx) / 2;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(x - pad, y - pad, logoPx + pad * 2, logoPx + pad * 2);
+      ctx.drawImage(img, x, y, logoPx, logoPx);
+    } catch {
+      // 图标加载失败时仍下载纯码
+    }
+
     const link = document.createElement("a");
     link.download = `report-${report?.report_code || report?.id}.png`;
-    link.href = canvas.toDataURL("image/png");
+    link.href = out.toDataURL("image/png");
     link.click();
   }
 
@@ -209,19 +234,36 @@ export default function ReportCreate() {
               报告二维码已生成
             </h2>
             <div className="flex flex-col items-center gap-4">
-              <QRCodeCanvas
-                id="report-qr-canvas"
-                value={publicURL}
-                size={QR_SIZE}
-                level="H"
-                includeMargin
-                imageSettings={{
-                  src: QR_LOGO_SRC,
-                  width: QR_LOGO_SIZE,
-                  height: QR_LOGO_SIZE,
-                  excavate: true,
-                }}
-              />
+              {/* 中间图标用叠层保证可见；canvas 仍 excavate 便于扫码 */}
+              <div
+                className="relative"
+                style={{ width: QR_SIZE, height: QR_SIZE }}
+              >
+                <QRCodeCanvas
+                  id="report-qr-canvas"
+                  value={publicURL}
+                  size={QR_SIZE}
+                  level="H"
+                  includeMargin
+                  imageSettings={{
+                    src: qrCenterLogo,
+                    height: QR_LOGO_SIZE,
+                    width: QR_LOGO_SIZE,
+                    excavate: true,
+                  }}
+                />
+                <img
+                  src={qrCenterLogo}
+                  alt=""
+                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white"
+                  style={{
+                    width: QR_LOGO_SIZE,
+                    height: QR_LOGO_SIZE,
+                    padding: 4,
+                    boxSizing: "content-box",
+                  }}
+                />
+              </div>
               <div className="w-full break-all text-center text-sm text-stone-600">
                 <p className="mb-1 font-medium text-stone-800">
                   {report.report_code}
