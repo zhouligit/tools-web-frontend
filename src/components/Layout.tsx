@@ -23,6 +23,9 @@ export default function Layout() {
             <Link to="/tools/image" className="hover:text-white">
               图片处理
             </Link>
+            <Link to="/tools/random-stats" className="hover:text-white">
+              随机数
+            </Link>
           </nav>
         </div>
       </header>

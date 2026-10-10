@@ -13,6 +13,12 @@ const tools = [
     path: "/tools/image",
     tag: "Image",
   },
+  {
+    title: "随机数生成",
+    desc: "已知最大值、最小值、标准差，随机生成 250 个数字。",
+    path: "/tools/random-stats",
+    tag: "Math",
+  },
 ];
 
 export default function Home() {
