@@ -23,9 +23,9 @@ const emptyForm: CreateReportPayload = {
   appraisers: "",
 };
 
-/** 二维码边长；中间图标约占 26%（贴近样例中心白底比例） */
+/** 二维码边长；中间图标白底约占 22%（按样例图1实测） */
 const QR_SIZE = 240;
-const QR_LOGO_SIZE = Math.round(QR_SIZE * 0.26);
+const QR_LOGO_SIZE = Math.round(QR_SIZE * 0.22);
 
 export default function ReportCreate() {
   const [form, setForm] = useState<CreateReportPayload>(emptyForm);
