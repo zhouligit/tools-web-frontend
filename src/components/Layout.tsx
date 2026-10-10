@@ -1,6 +1,11 @@
+import { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 export default function Layout() {
+  useEffect(() => {
+    document.title = "在线工具箱";
+  }, []);
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">

@@ -39,8 +39,8 @@ body:has(.report-view) {
   margin: 0 0 14px;
   text-align: center;
   font-size: 15px;
-  font-weight: 600;
-  line-height: 1.6;
+  font-weight: 700;
+  line-height: 1.7;
   color: #000;
 }
 
@@ -54,20 +54,26 @@ body:has(.report-view) {
 .report-view-table th,
 .report-view-table td {
   border: 1px solid #000;
-  padding: 10px 8px;
+  padding: 10px 6px;
   vertical-align: middle;
   word-break: break-word;
-  font-weight: 400;
   color: #000;
 }
 
 .report-view-table th {
-  width: 34%;
+  width: 4.6em;
   text-align: center;
   background: #fff;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.report-view-table th div {
+  font-weight: 700;
 }
 
 .report-view-table td {
+  font-weight: 400;
   text-align: left;
   padding-left: 10px;
   padding-right: 10px;

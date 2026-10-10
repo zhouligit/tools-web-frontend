@@ -9,6 +9,14 @@ export default function ReportView() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const prev = document.title;
+    document.title = "\u200b";
+    return () => {
+      document.title = prev;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!id) {
       setError("无效链接");
       setLoading(false);
@@ -55,7 +63,9 @@ export default function ReportView() {
     <div className="report-view report-view-page">
       <div className="report-view-inner">
         <p className="report-view-notice">
-          该报告主要信息已上传至市住建委“北京市城镇房屋建筑使用安全管理系统”
+          该报告主要信息已上传至市住建委“北京市城镇房屋建筑使用
+          <br />
+          安全管理系统”
         </p>
         <table className="report-view-table">
           <tbody>
@@ -95,15 +105,35 @@ function pad3(items?: string[]) {
   return out;
 }
 
-/** 与截图一致：鉴定结论1): Asu级 */
+/** 与样例一致：鉴定结论1): Asu级 */
 function formatSlot(label: string, value: string) {
   return value ? `${label}): ${value}` : `${label}):`;
+}
+
+/** 左边栏一行最多四个字 */
+function formatLabelLines(label: string) {
+  const chars = Array.from(label);
+  const lines: string[] = [];
+  for (let i = 0; i < chars.length; i += 4) {
+    lines.push(chars.slice(i, i + 4).join(""));
+  }
+  return lines;
+}
+
+function LabelCell({ label }: { label: string }) {
+  return (
+    <th>
+      {formatLabelLines(label).map((line, i) => (
+        <div key={i}>{line}</div>
+      ))}
+    </th>
+  );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <tr>
-      <th>{label}</th>
+      <LabelCell label={label} />
       <td>{value || "\u00A0"}</td>
     </tr>
   );
@@ -112,7 +142,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function MultiRow({ label, items }: { label: string; items: string[] }) {
   return (
     <tr>
-      <th>{label}</th>
+      <LabelCell label={label} />
       <td>
         {items.map((item, index) => (
           <div key={index}>{item}</div>

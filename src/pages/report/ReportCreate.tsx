@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import {
   createReport,
@@ -28,6 +28,10 @@ export default function ReportCreate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const printRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.title = "\u200b";
+  }, []);
 
   const publicURL = useMemo(
     () => (report ? reportPublicURL(report.id) : ""),
@@ -86,7 +90,7 @@ export default function ReportCreate() {
     <div className="report-create min-h-screen bg-stone-100 text-stone-900">
       <header className="border-b border-stone-200 bg-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-          <h1 className="text-lg font-semibold tracking-wide">鉴定报告二维码</h1>
+          <h1 className="text-lg font-semibold tracking-wide">鉴定报告</h1>
           <span className="text-xs text-stone-500">填写后生成 · 微信扫码查看</span>
         </div>
       </header>

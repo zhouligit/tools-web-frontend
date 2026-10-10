@@ -41,6 +41,12 @@ export function getReport(id: string) {
   return request<Report>(`/api/v1/reports/${id}`);
 }
 
+/** 二维码/公开链接优先用 VITE_PUBLIC_ORIGIN（如 http://106.13.115.166:18082） */
 export function reportPublicURL(id: string) {
-  return `${window.location.origin}/r/${id}`;
+  const configured = (import.meta.env.VITE_PUBLIC_ORIGIN as string | undefined)?.replace(
+    /\/$/,
+    "",
+  );
+  const origin = configured || window.location.origin;
+  return `${origin}/r/${id}`;
 }
