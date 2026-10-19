@@ -1,19 +1,14 @@
 import { useEffect } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import UserMenu from "./UserMenu";
 
 export default function Layout() {
-  const { user, loading, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     document.title = "在线工具箱";
   }, []);
-
-  async function onLogout() {
-    await logout();
-    navigate("/login", { replace: true });
-  }
 
   return (
     <div className="min-h-screen">
@@ -40,30 +35,12 @@ export default function Layout() {
                 <Link to="/report" className="hover:text-white">
                   报告二维码
                 </Link>
+                <span className="border-l border-slate-700 pl-4">
+                  <UserMenu variant="dark" />
+                </span>
               </>
             )}
-            {!loading && user && (
-              <span className="flex items-center gap-3 border-l border-slate-700 pl-4">
-                <span className="text-slate-400">{user.username}</span>
-                <button
-                  type="button"
-                  onClick={onLogout}
-                  className="hover:text-white"
-                >
-                  退出
-                </button>
-              </span>
-            )}
-            {!loading && !user && (
-              <span className="flex gap-3">
-                <Link to="/login" className="hover:text-white">
-                  登录
-                </Link>
-                <Link to="/register" className="text-indigo-300 hover:text-indigo-200">
-                  注册
-                </Link>
-              </span>
-            )}
+            {!user && <UserMenu variant="dark" />}
           </nav>
         </div>
       </header>

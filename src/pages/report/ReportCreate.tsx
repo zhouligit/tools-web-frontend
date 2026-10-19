@@ -7,6 +7,7 @@ import {
   reportPublicURL,
 } from "../../api/report";
 import { getToolUsage, incrementToolUsage } from "../../api/usage";
+import UserMenu from "../../components/UserMenu";
 import qrCenterLogo from "../../assets/qr-center-logo.png";
 
 const TOOL_KEY = "report-qr";
@@ -143,18 +144,21 @@ export default function ReportCreate() {
 
   return (
     <div className="report-create min-h-screen bg-stone-100 text-stone-900">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-4">
+      <header className="border-b border-stone-200 bg-white print:hidden">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <div>
             <h1 className="text-lg font-semibold tracking-wide">鉴定报告</h1>
             <p className="text-xs text-stone-500">填写后生成 · 微信扫码查看</p>
           </div>
-          <div className="shrink-0 rounded border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs">
-            <span className="text-stone-500">累计使用 </span>
-            <span className="font-mono text-stone-800">
-              {useCount == null ? "—" : useCount.toLocaleString()}
-            </span>
-            <span className="text-stone-500"> 次</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="rounded border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs">
+              <span className="text-stone-500">累计使用 </span>
+              <span className="font-mono text-stone-800">
+                {useCount == null ? "—" : useCount.toLocaleString()}
+              </span>
+              <span className="text-stone-500"> 次</span>
+            </div>
+            <UserMenu variant="light" />
           </div>
         </div>
       </header>

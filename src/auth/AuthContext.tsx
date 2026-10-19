@@ -73,10 +73,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    // 先清本地状态，避免接口慢/失败时界面仍显示已登录
+    setUser(null);
     try {
       await apiLogout();
-    } finally {
-      setUser(null);
+    } catch {
+      // 即使服务端失败，前端也视为已退出
     }
   }, []);
 
