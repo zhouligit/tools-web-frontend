@@ -6,7 +6,10 @@ import {
   Report,
   reportPublicURL,
 } from "../../api/report";
+import { getToolUsage, incrementToolUsage } from "../../api/usage";
 import qrCenterLogo from "../../assets/qr-center-logo.png";
+
+const TOOL_KEY = "report-qr";
 
 const emptyForm: CreateReportPayload = {
   report_type: "房屋综合安全性（含抗震）鉴定报告（楼房）",
@@ -32,10 +35,26 @@ export default function ReportCreate() {
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [useCount, setUseCount] = useState<number | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.title = "\u200b";
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const count = await getToolUsage(TOOL_KEY);
+        if (!cancelled) setUseCount(count);
+      } catch {
+        if (!cancelled) setUseCount(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const publicURL = useMemo(
@@ -69,6 +88,12 @@ export default function ReportCreate() {
     try {
       const created = await createReport(form);
       setReport(created);
+      try {
+        const count = await incrementToolUsage(TOOL_KEY);
+        setUseCount(count);
+      } catch {
+        // 统计失败不影响出码
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "提交失败");
     } finally {
@@ -119,9 +144,18 @@ export default function ReportCreate() {
   return (
     <div className="report-create min-h-screen bg-stone-100 text-stone-900">
       <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-          <h1 className="text-lg font-semibold tracking-wide">鉴定报告</h1>
-          <span className="text-xs text-stone-500">填写后生成 · 微信扫码查看</span>
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-4">
+          <div>
+            <h1 className="text-lg font-semibold tracking-wide">鉴定报告</h1>
+            <p className="text-xs text-stone-500">填写后生成 · 微信扫码查看</p>
+          </div>
+          <div className="shrink-0 rounded border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs">
+            <span className="text-stone-500">累计使用 </span>
+            <span className="font-mono text-stone-800">
+              {useCount == null ? "—" : useCount.toLocaleString()}
+            </span>
+            <span className="text-stone-500"> 次</span>
+          </div>
         </div>
       </header>
 
