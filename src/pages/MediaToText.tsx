@@ -7,8 +7,10 @@ import {
   Task,
   uploadTask,
 } from "../api/client";
+import { UsageBadge, useToolUsage } from "../components/UsageBadge";
 import { downloadText, segmentsToSRT, STAGE_LABELS } from "../utils/export";
 
+const TOOL_KEY = "media-to-text";
 const ACCEPT =
   "audio/*,video/*,.mp3,.mp4,.wav,.m4a,.webm,.ogg,.mkv,.mov,.avi,.flac";
 
@@ -30,6 +32,7 @@ export default function MediaToText() {
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<number>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { useCount, bump } = useToolUsage(TOOL_KEY);
 
   useEffect(() => {
     return () => {
@@ -67,6 +70,7 @@ export default function MediaToText() {
           ? await createTaskFromURL(url.trim(), language)
           : await uploadTask(file!, language);
       setTask(created);
+      await bump();
       pollTask(created.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "submit failed");
@@ -107,11 +111,16 @@ export default function MediaToText() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold">视频 / 音频转文字</h1>
-      <p className="mb-6 text-slate-400">
-        上传 mp4、mov 等视频或 mp3、wav 音频，自动提取语音并转成文字（含时间轴）。
-        粘贴链接时需服务器已安装 yt-dlp。
-      </p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="mb-2 text-2xl font-bold">视频 / 音频转文字</h1>
+          <p className="text-slate-400">
+            上传 mp4、mov 等视频或 mp3、wav 音频，自动提取语音并转成文字（含时间轴）。
+            粘贴链接时需服务器已安装 yt-dlp。
+          </p>
+        </div>
+        <UsageBadge count={useCount} />
+      </div>
 
       <div className="mb-4 flex gap-2">
         <button

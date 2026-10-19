@@ -1,3 +1,5 @@
+import { apiBase, apiJSON } from "./http";
+
 export type TaskStatus = "pending" | "processing" | "completed" | "failed";
 
 export interface Segment {
@@ -23,15 +25,8 @@ export interface Task {
   updated_at: string;
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const resp = await fetch(`${API_BASE}${path}`, init);
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({ error: resp.statusText }));
-    throw new Error(err.error || "request failed");
-  }
-  return resp.json();
+  return apiJSON<T>(path, init);
 }
 
 export function createTaskFromURL(sourceURL: string, language: string) {
@@ -57,7 +52,7 @@ export function getTask(id: string) {
 }
 
 export function getTaskSRTUrl(id: string) {
-  return `${API_BASE}/api/v1/tasks/${id}/srt`;
+  return `${apiBase()}/api/v1/tasks/${id}/srt`;
 }
 
 export function formatTime(sec: number) {

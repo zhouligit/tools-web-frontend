@@ -7,13 +7,16 @@ import {
   ImageProcessResult,
 } from "../api/image";
 import { OCRResult, ocrImage } from "../api/ocr";
+import { UsageBadge, useToolUsage } from "../components/UsageBadge";
 
 type Tab = "convert" | "compress" | "ocr";
 
+const TOOL_KEY = "image";
 const ACCEPT =
   "image/jpeg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp";
 
 export default function ImageTool() {
+  const { useCount, bump } = useToolUsage(TOOL_KEY);
   const [tab, setTab] = useState<Tab>("convert");
   const [file, setFile] = useState<File | null>(null);
   const [previewURL, setPreviewURL] = useState("");
@@ -100,6 +103,7 @@ export default function ImageTool() {
             : await compressImage(file, compressQuality, maxEdge, outputFormat);
         setResult(data);
       }
+      await bump();
     } catch (err) {
       setError(err instanceof Error ? err.message : "process failed");
     } finally {
@@ -139,10 +143,15 @@ export default function ImageTool() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold">图片处理</h1>
-      <p className="mb-6 text-slate-400">
-        格式转换、体积压缩与文字提取。单张建议不超过 20MB；GIF 动图仅处理第一帧。
-      </p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="mb-2 text-2xl font-bold">图片处理</h1>
+          <p className="text-slate-400">
+            格式转换、体积压缩与文字提取。单张建议不超过 20MB；GIF 动图仅处理第一帧。
+          </p>
+        </div>
+        <UsageBadge count={useCount} />
+      </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
         <button

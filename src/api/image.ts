@@ -49,6 +49,7 @@ async function postImage(
   const resp = await fetch(`${import.meta.env.VITE_API_BASE ?? ""}${path}`, {
     method: "POST",
     body: form,
+    credentials: "include",
   });
 
   if (!resp.ok) {

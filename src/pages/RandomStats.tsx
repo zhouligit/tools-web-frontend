@@ -1,5 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { getToolUsage, incrementToolUsage } from "../api/usage";
+import { FormEvent, useMemo, useState } from "react";
+import { UsageBadge, useToolUsage } from "../components/UsageBadge";
 import {
   generateWithMinMaxStd,
   maxAchievableStd,
@@ -17,22 +17,7 @@ export default function RandomStats() {
   const [numbers, setNumbers] = useState<number[] | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
-  const [useCount, setUseCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const count = await getToolUsage(TOOL_KEY);
-        if (!cancelled) setUseCount(count);
-      } catch {
-        if (!cancelled) setUseCount(null);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { useCount, bump } = useToolUsage(TOOL_KEY);
 
   const previewMaxStd = useMemo(() => {
     const min = Number(minStr);
@@ -65,13 +50,7 @@ export default function RandomStats() {
       if (!rounded.includes(rMin)) rounded[0] = rMin;
       if (!rounded.includes(rMax)) rounded[1] = rMax;
       setNumbers(rounded);
-
-      try {
-        const count = await incrementToolUsage(TOOL_KEY);
-        setUseCount(count);
-      } catch {
-        // 统计失败不影响生成结果
-      }
+      await bump();
     } catch (err) {
       setNumbers(null);
       setError(err instanceof Error ? err.message : "生成失败");
@@ -96,13 +75,7 @@ export default function RandomStats() {
             已知最大值、最小值、标准差，随机生成 {COUNT} 个数字（均值取区间中点）。
           </p>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm">
-          <span className="text-slate-500">累计使用 </span>
-          <span className="font-mono text-indigo-300">
-            {useCount == null ? "—" : useCount.toLocaleString()}
-          </span>
-          <span className="text-slate-500"> 次</span>
-        </div>
+        <UsageBadge count={useCount} />
       </div>
 
       <form

@@ -19,6 +19,7 @@ export async function ocrImage(file: File, lang: string): Promise<OCRResult> {
   const resp = await fetch(`${import.meta.env.VITE_API_BASE ?? ""}/api/v1/tools/image/ocr`, {
     method: "POST",
     body: form,
+    credentials: "include",
   });
 
   if (!resp.ok) {

@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+import { apiJSON } from "./http";
 
 export interface Report {
   id: string;
@@ -20,17 +20,8 @@ export interface Report {
 
 export type CreateReportPayload = Omit<Report, "id" | "created_at" | "updated_at">;
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const resp = await fetch(`${API_BASE}${path}`, init);
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({ error: resp.statusText }));
-    throw new Error(err.error || "request failed");
-  }
-  return resp.json();
-}
-
 export function createReport(payload: CreateReportPayload) {
-  return request<Report>("/api/v1/reports", {
+  return apiJSON<Report>("/api/v1/reports", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -38,7 +29,7 @@ export function createReport(payload: CreateReportPayload) {
 }
 
 export function getReport(id: string) {
-  return request<Report>(`/api/v1/reports/${id}`);
+  return apiJSON<Report>(`/api/v1/reports/${id}`);
 }
 
 /** 二维码/公开链接优先用 VITE_PUBLIC_ORIGIN（如 http://106.13.115.166:18082） */
