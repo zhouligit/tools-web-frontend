@@ -20,11 +20,12 @@ export default function App() {
           <Route path="/r/:id" element={<ReportView />} />
 
           <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            {/* 进入具体工具时才要求登录 */}
             <Route element={<RequireAuth />}>
-              <Route path="/" element={<Home />} />
               <Route path="/tools/media-to-text" element={<MediaToText />} />
               <Route path="/tools/image" element={<ImageTool />} />
               <Route path="/tools/random-stats" element={<RandomStats />} />

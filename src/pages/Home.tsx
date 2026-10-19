@@ -19,13 +19,21 @@ const tools = [
     path: "/tools/random-stats",
     tag: "Math",
   },
+  {
+    title: "鉴定报告二维码",
+    desc: "填写报告信息，生成可供微信扫码查看的长期二维码。",
+    path: "/report",
+    tag: "QR",
+  },
 ];
 
 export default function Home() {
   return (
     <div>
       <h1 className="mb-2 text-3xl font-bold">实用在线工具</h1>
-      <p className="mb-8 text-slate-400">免费自建部署，数据可控。</p>
+      <p className="mb-8 text-slate-400">
+        免费自建部署，数据可控。进入具体工具时需登录。
+      </p>
       <div className="grid gap-4 md:grid-cols-2">
         {tools.map((tool) => (
           <Link

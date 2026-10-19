@@ -18,29 +18,24 @@ export default function Layout() {
             在线工具箱
           </Link>
           <nav className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
-            {user && (
-              <>
-                <Link to="/" className="hover:text-white">
-                  首页
-                </Link>
-                <Link to="/tools/media-to-text" className="hover:text-white">
-                  视频转文字
-                </Link>
-                <Link to="/tools/image" className="hover:text-white">
-                  图片处理
-                </Link>
-                <Link to="/tools/random-stats" className="hover:text-white">
-                  随机数
-                </Link>
-                <Link to="/report" className="hover:text-white">
-                  报告二维码
-                </Link>
-                <span className="border-l border-slate-700 pl-4">
-                  <UserMenu variant="dark" />
-                </span>
-              </>
-            )}
-            {!user && <UserMenu variant="dark" />}
+            <Link to="/" className="hover:text-white">
+              首页
+            </Link>
+            <Link to="/tools/media-to-text" className="hover:text-white">
+              视频转文字
+            </Link>
+            <Link to="/tools/image" className="hover:text-white">
+              图片处理
+            </Link>
+            <Link to="/tools/random-stats" className="hover:text-white">
+              随机数
+            </Link>
+            <Link to="/report" className="hover:text-white">
+              报告二维码
+            </Link>
+            <span className={user ? "border-l border-slate-700 pl-4" : ""}>
+              <UserMenu variant="dark" />
+            </span>
           </nav>
         </div>
       </header>
