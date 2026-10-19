@@ -1,4 +1,5 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { getToolUsage, incrementToolUsage } from "../api/usage";
 import {
   generateWithMinMaxStd,
   maxAchievableStd,
@@ -6,6 +7,7 @@ import {
 } from "../utils/randomStats";
 
 const COUNT = 250;
+const TOOL_KEY = "random-stats";
 
 export default function RandomStats() {
   const [minStr, setMinStr] = useState("0");
@@ -15,6 +17,22 @@ export default function RandomStats() {
   const [numbers, setNumbers] = useState<number[] | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [useCount, setUseCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const count = await getToolUsage(TOOL_KEY);
+        if (!cancelled) setUseCount(count);
+      } catch {
+        if (!cancelled) setUseCount(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const previewMaxStd = useMemo(() => {
     const min = Number(minStr);
@@ -28,7 +46,7 @@ export default function RandomStats() {
     [numbers],
   );
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
     setCopied(false);
@@ -42,12 +60,18 @@ export default function RandomStats() {
     try {
       const arr = generateWithMinMaxStd(COUNT, min, max, std);
       const rounded = arr.map((x) => Number(x.toFixed(decimals)));
-      // 四舍五入后微调保证仍含 min/max（若精度允许）
       const rMin = Number(min.toFixed(decimals));
       const rMax = Number(max.toFixed(decimals));
       if (!rounded.includes(rMin)) rounded[0] = rMin;
       if (!rounded.includes(rMax)) rounded[1] = rMax;
       setNumbers(rounded);
+
+      try {
+        const count = await incrementToolUsage(TOOL_KEY);
+        setUseCount(count);
+      } catch {
+        // 统计失败不影响生成结果
+      }
     } catch (err) {
       setNumbers(null);
       setError(err instanceof Error ? err.message : "生成失败");
@@ -65,10 +89,21 @@ export default function RandomStats() {
 
   return (
     <div>
-      <h1 className="mb-2 text-3xl font-bold">随机数生成</h1>
-      <p className="mb-8 text-slate-400">
-        已知最大值、最小值、标准差，随机生成 {COUNT} 个数字（均值取区间中点）。
-      </p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold">随机数生成</h1>
+          <p className="text-slate-400">
+            已知最大值、最小值、标准差，随机生成 {COUNT} 个数字（均值取区间中点）。
+          </p>
+        </div>
+        <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm">
+          <span className="text-slate-500">累计使用 </span>
+          <span className="font-mono text-indigo-300">
+            {useCount == null ? "—" : useCount.toLocaleString()}
+          </span>
+          <span className="text-slate-500"> 次</span>
+        </div>
+      </div>
 
       <form
         onSubmit={onSubmit}
